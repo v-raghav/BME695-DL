@@ -1,0 +1,842 @@
+Epochs : 5
+
+
+****************************
+Learning Rate: 5e-06
+Filter : None and sigma: 1
+Noise level : 20
+Overall accuracy of the network on the 1000 test images: 76.1 %
+
+****************************
+
+****************************
+Learning Rate: 5e-06
+Filter : None and sigma: 1
+Noise level : 50
+Overall accuracy of the network on the 1000 test images: 68.0 %
+
+****************************
+
+****************************
+Learning Rate: 5e-06
+Filter : None and sigma: 1
+Noise level : 80
+Overall accuracy of the network on the 1000 test images: 54.5 %
+
+****************************
+
+****************************
+Learning Rate: 5e-06
+Filter : mean and sigma: 1
+Noise level : 20
+Overall accuracy of the network on the 1000 test images: 79.3 %
+
+****************************
+
+****************************
+Learning Rate: 5e-06
+Filter : mean and sigma: 1
+Noise level : 50
+Overall accuracy of the network on the 1000 test images: 72.7 %
+
+****************************
+
+****************************
+Learning Rate: 5e-06
+Filter : mean and sigma: 1
+Noise level : 80
+Overall accuracy of the network on the 1000 test images: 62.0 %
+
+****************************
+
+****************************
+Learning Rate: 5e-06
+Filter : gaussian and sigma: 0.5
+Noise level : 20
+Overall accuracy of the network on the 1000 test images: 77.3 %
+
+****************************
+
+****************************
+Learning Rate: 5e-06
+Filter : gaussian and sigma: 0.5
+Noise level : 50
+Overall accuracy of the network on the 1000 test images: 70.0 %
+
+****************************
+
+****************************
+Learning Rate: 5e-06
+Filter : gaussian and sigma: 0.5
+Noise level : 80
+Overall accuracy of the network on the 1000 test images: 59.2 %
+
+****************************
+
+****************************
+Learning Rate: 5e-06
+Filter : gaussian and sigma: 1
+Noise level : 20
+Overall accuracy of the network on the 1000 test images: 81.6 %
+
+****************************
+
+****************************
+Learning Rate: 5e-06
+Filter : gaussian and sigma: 1
+Noise level : 50
+Overall accuracy of the network on the 1000 test images: 75.0 %
+
+****************************
+
+****************************
+Learning Rate: 5e-06
+Filter : gaussian and sigma: 1
+Noise level : 80
+Overall accuracy of the network on the 1000 test images: 63.2 %
+
+****************************
+
+****************************
+Learning Rate: 5e-06
+Filter : gaussian and sigma: 5
+Noise level : 20
+Overall accuracy of the network on the 1000 test images: 80.5 %
+
+****************************
+
+****************************
+Learning Rate: 5e-06
+Filter : gaussian and sigma: 5
+Noise level : 50
+Overall accuracy of the network on the 1000 test images: 72.3 %
+
+****************************
+
+****************************
+Learning Rate: 5e-06
+Filter : gaussian and sigma: 5
+Noise level : 80
+Overall accuracy of the network on the 1000 test images: 66.8 %
+
+****************************
+
+****************************
+Learning Rate: 5e-06
+Filter : gaussian and sigma: 10
+Noise level : 20
+Overall accuracy of the network on the 1000 test images: 80.4 %
+
+****************************
+
+****************************
+Learning Rate: 5e-06
+Filter : gaussian and sigma: 10
+Noise level : 50
+Overall accuracy of the network on the 1000 test images: 72.2 %
+
+****************************
+
+****************************
+Learning Rate: 5e-06
+Filter : gaussian and sigma: 10
+Noise level : 80
+Overall accuracy of the network on the 1000 test images: 65.2 %
+
+****************************
+
+****************************
+Learning Rate: 5e-06
+Filter : gaussian and sigma: 50
+Noise level : 20
+Overall accuracy of the network on the 1000 test images: 80.5 %
+
+****************************
+
+****************************
+Learning Rate: 5e-06
+Filter : gaussian and sigma: 50
+Noise level : 50
+Overall accuracy of the network on the 1000 test images: 72.2 %
+
+****************************
+
+****************************
+Learning Rate: 5e-06
+Filter : gaussian and sigma: 50
+Noise level : 80
+Overall accuracy of the network on the 1000 test images: 64.1 %
+
+****************************
+
+****************************
+Learning Rate: 1e-05
+Filter : None and sigma: 1
+Noise level : 20
+Overall accuracy of the network on the 1000 test images: 78.6 %
+
+****************************
+
+****************************
+Learning Rate: 1e-05
+Filter : None and sigma: 1
+Noise level : 50
+Overall accuracy of the network on the 1000 test images: 66.5 %
+
+****************************
+
+****************************
+Learning Rate: 1e-05
+Filter : None and sigma: 1
+Noise level : 80
+Overall accuracy of the network on the 1000 test images: 56.1 %
+
+****************************
+
+****************************
+Learning Rate: 1e-05
+Filter : mean and sigma: 1
+Noise level : 20
+Overall accuracy of the network on the 1000 test images: 82.8 %
+
+****************************
+
+****************************
+Learning Rate: 1e-05
+Filter : mean and sigma: 1
+Noise level : 50
+Overall accuracy of the network on the 1000 test images: 74.6 %
+
+****************************
+
+****************************
+Learning Rate: 1e-05
+Filter : mean and sigma: 1
+Noise level : 80
+Overall accuracy of the network on the 1000 test images: 68.6 %
+
+****************************
+
+****************************
+Learning Rate: 1e-05
+Filter : gaussian and sigma: 0.5
+Noise level : 20
+Overall accuracy of the network on the 1000 test images: 81.3 %
+
+****************************
+
+****************************
+Learning Rate: 1e-05
+Filter : gaussian and sigma: 0.5
+Noise level : 50
+Overall accuracy of the network on the 1000 test images: 69.4 %
+
+****************************
+
+****************************
+Learning Rate: 1e-05
+Filter : gaussian and sigma: 0.5
+Noise level : 80
+Overall accuracy of the network on the 1000 test images: 59.5 %
+
+****************************
+
+****************************
+Learning Rate: 1e-05
+Filter : gaussian and sigma: 1
+Noise level : 20
+Overall accuracy of the network on the 1000 test images: 85.3 %
+
+****************************
+
+****************************
+Learning Rate: 1e-05
+Filter : gaussian and sigma: 1
+Noise level : 50
+Overall accuracy of the network on the 1000 test images: 76.1 %
+
+****************************
+
+****************************
+Learning Rate: 1e-05
+Filter : gaussian and sigma: 1
+Noise level : 80
+Overall accuracy of the network on the 1000 test images: 66.8 %
+
+****************************
+
+****************************
+Learning Rate: 1e-05
+Filter : gaussian and sigma: 5
+Noise level : 20
+Overall accuracy of the network on the 1000 test images: 86.3 %
+
+****************************
+
+****************************
+Learning Rate: 1e-05
+Filter : gaussian and sigma: 5
+Noise level : 50
+Overall accuracy of the network on the 1000 test images: 76.3 %
+
+****************************
+
+****************************
+Learning Rate: 1e-05
+Filter : gaussian and sigma: 5
+Noise level : 80
+Overall accuracy of the network on the 1000 test images: 65.9 %
+
+****************************
+
+****************************
+Learning Rate: 1e-05
+Filter : gaussian and sigma: 10
+Noise level : 20
+Overall accuracy of the network on the 1000 test images: 85.7 %
+
+****************************
+
+****************************
+Learning Rate: 1e-05
+Filter : gaussian and sigma: 10
+Noise level : 50
+Overall accuracy of the network on the 1000 test images: 75.8 %
+
+****************************
+
+****************************
+Learning Rate: 1e-05
+Filter : gaussian and sigma: 10
+Noise level : 80
+Overall accuracy of the network on the 1000 test images: 67.9 %
+
+****************************
+
+****************************
+Learning Rate: 1e-05
+Filter : gaussian and sigma: 50
+Noise level : 20
+Overall accuracy of the network on the 1000 test images: 85.7 %
+
+****************************
+
+****************************
+Learning Rate: 1e-05
+Filter : gaussian and sigma: 50
+Noise level : 50
+Overall accuracy of the network on the 1000 test images: 76.9 %
+
+****************************
+
+****************************
+Learning Rate: 1e-05
+Filter : gaussian and sigma: 50
+Noise level : 80
+Overall accuracy of the network on the 1000 test images: 67.0 %
+
+****************************
+
+****************************
+Learning Rate: 5e-05
+Filter : None and sigma: 1
+Noise level : 20
+Overall accuracy of the network on the 1000 test images: 89.4 %
+
+****************************
+
+****************************
+Learning Rate: 5e-05
+Filter : None and sigma: 1
+Noise level : 50
+Overall accuracy of the network on the 1000 test images: 80.2 %
+
+****************************
+
+****************************
+Learning Rate: 5e-05
+Filter : None and sigma: 1
+Noise level : 80
+Overall accuracy of the network on the 1000 test images: 61.8 %
+
+****************************
+
+****************************
+Learning Rate: 5e-05
+Filter : mean and sigma: 1
+Noise level : 20
+Overall accuracy of the network on the 1000 test images: 90.7 %
+
+****************************
+
+****************************
+Learning Rate: 5e-05
+Filter : mean and sigma: 1
+Noise level : 50
+Overall accuracy of the network on the 1000 test images: 85.8 %
+
+****************************
+
+****************************
+Learning Rate: 5e-05
+Filter : mean and sigma: 1
+Noise level : 80
+Overall accuracy of the network on the 1000 test images: 20.0 %
+
+****************************
+
+****************************
+Learning Rate: 5e-05
+Filter : gaussian and sigma: 0.5
+Noise level : 20
+Overall accuracy of the network on the 1000 test images: 88.0 %
+
+****************************
+
+****************************
+Learning Rate: 5e-05
+Filter : gaussian and sigma: 0.5
+Noise level : 50
+Overall accuracy of the network on the 1000 test images: 77.5 %
+
+****************************
+
+****************************
+Learning Rate: 5e-05
+Filter : gaussian and sigma: 0.5
+Noise level : 80
+Overall accuracy of the network on the 1000 test images: 71.0 %
+
+****************************
+
+****************************
+Learning Rate: 5e-05
+Filter : gaussian and sigma: 1
+Noise level : 20
+Overall accuracy of the network on the 1000 test images: 91.5 %
+
+****************************
+
+****************************
+Learning Rate: 5e-05
+Filter : gaussian and sigma: 1
+Noise level : 50
+Overall accuracy of the network on the 1000 test images: 86.0 %
+
+****************************
+
+****************************
+Learning Rate: 5e-05
+Filter : gaussian and sigma: 1
+Noise level : 80
+Overall accuracy of the network on the 1000 test images: 79.0 %
+
+****************************
+
+****************************
+Learning Rate: 5e-05
+Filter : gaussian and sigma: 5
+Noise level : 20
+Overall accuracy of the network on the 1000 test images: 91.2 %
+
+****************************
+
+****************************
+Learning Rate: 5e-05
+Filter : gaussian and sigma: 5
+Noise level : 50
+Overall accuracy of the network on the 1000 test images: 84.8 %
+
+****************************
+
+****************************
+Learning Rate: 5e-05
+Filter : gaussian and sigma: 5
+Noise level : 80
+Overall accuracy of the network on the 1000 test images: 20.0 %
+
+****************************
+
+****************************
+Learning Rate: 5e-05
+Filter : gaussian and sigma: 10
+Noise level : 20
+Overall accuracy of the network on the 1000 test images: 90.5 %
+
+****************************
+
+****************************
+Learning Rate: 5e-05
+Filter : gaussian and sigma: 10
+Noise level : 50
+Overall accuracy of the network on the 1000 test images: 84.6 %
+
+****************************
+
+****************************
+Learning Rate: 5e-05
+Filter : gaussian and sigma: 10
+Noise level : 80
+Overall accuracy of the network on the 1000 test images: 77.7 %
+
+****************************
+
+****************************
+Learning Rate: 5e-05
+Filter : gaussian and sigma: 50
+Noise level : 20
+Overall accuracy of the network on the 1000 test images: 94.1 %
+
+****************************
+
+****************************
+Learning Rate: 5e-05
+Filter : gaussian and sigma: 50
+Noise level : 50
+Overall accuracy of the network on the 1000 test images: 20.0 %
+
+****************************
+
+****************************
+Learning Rate: 5e-05
+Filter : gaussian and sigma: 50
+Noise level : 80
+Overall accuracy of the network on the 1000 test images: 20.0 %
+
+****************************
+
+****************************
+Learning Rate: 8e-05
+Filter : None and sigma: 1
+Noise level : 20
+Overall accuracy of the network on the 1000 test images: 89.1 %
+
+****************************
+
+****************************
+Learning Rate: 8e-05
+Filter : None and sigma: 1
+Noise level : 50
+Overall accuracy of the network on the 1000 test images: 20.0 %
+
+****************************
+
+****************************
+Learning Rate: 8e-05
+Filter : None and sigma: 1
+Noise level : 80
+Overall accuracy of the network on the 1000 test images: 52.3 %
+
+****************************
+
+****************************
+Learning Rate: 8e-05
+Filter : mean and sigma: 1
+Noise level : 20
+Overall accuracy of the network on the 1000 test images: 91.5 %
+
+****************************
+
+****************************
+Learning Rate: 8e-05
+Filter : mean and sigma: 1
+Noise level : 50
+Overall accuracy of the network on the 1000 test images: 20.0 %
+
+****************************
+
+****************************
+Learning Rate: 8e-05
+Filter : mean and sigma: 1
+Noise level : 80
+Overall accuracy of the network on the 1000 test images: 20.0 %
+
+****************************
+
+****************************
+Learning Rate: 8e-05
+Filter : gaussian and sigma: 0.5
+Noise level : 20
+Overall accuracy of the network on the 1000 test images: 20.0 %
+
+****************************
+
+****************************
+Learning Rate: 8e-05
+Filter : gaussian and sigma: 0.5
+Noise level : 50
+Overall accuracy of the network on the 1000 test images: 20.0 %
+
+****************************
+
+****************************
+Learning Rate: 8e-05
+Filter : gaussian and sigma: 0.5
+Noise level : 80
+Overall accuracy of the network on the 1000 test images: 69.7 %
+
+****************************
+
+****************************
+Learning Rate: 8e-05
+Filter : gaussian and sigma: 1
+Noise level : 20
+Overall accuracy of the network on the 1000 test images: 95.2 %
+
+****************************
+
+****************************
+Learning Rate: 8e-05
+Filter : gaussian and sigma: 1
+Noise level : 50
+Overall accuracy of the network on the 1000 test images: 20.0 %
+
+****************************
+
+****************************
+Learning Rate: 8e-05
+Filter : gaussian and sigma: 1
+Noise level : 80
+Overall accuracy of the network on the 1000 test images: 20.0 %
+
+****************************
+
+****************************
+Learning Rate: 8e-05
+Filter : gaussian and sigma: 5
+Noise level : 20
+Overall accuracy of the network on the 1000 test images: 20.0 %
+
+****************************
+
+****************************
+Learning Rate: 8e-05
+Filter : gaussian and sigma: 5
+Noise level : 50
+Overall accuracy of the network on the 1000 test images: 89.5 %
+
+****************************
+
+****************************
+Learning Rate: 8e-05
+Filter : gaussian and sigma: 5
+Noise level : 80
+Overall accuracy of the network on the 1000 test images: 20.0 %
+
+****************************
+
+****************************
+Learning Rate: 8e-05
+Filter : gaussian and sigma: 10
+Noise level : 20
+Overall accuracy of the network on the 1000 test images: 20.0 %
+
+****************************
+
+****************************
+Learning Rate: 8e-05
+Filter : gaussian and sigma: 10
+Noise level : 50
+Overall accuracy of the network on the 1000 test images: 20.0 %
+
+****************************
+
+****************************
+Learning Rate: 8e-05
+Filter : gaussian and sigma: 10
+Noise level : 80
+Overall accuracy of the network on the 1000 test images: 80.2 %
+
+****************************
+
+****************************
+Learning Rate: 8e-05
+Filter : gaussian and sigma: 50
+Noise level : 20
+Overall accuracy of the network on the 1000 test images: 20.0 %
+
+****************************
+
+****************************
+Learning Rate: 8e-05
+Filter : gaussian and sigma: 50
+Noise level : 50
+Overall accuracy of the network on the 1000 test images: 82.8 %
+
+****************************
+
+****************************
+Learning Rate: 8e-05
+Filter : gaussian and sigma: 50
+Noise level : 80
+Overall accuracy of the network on the 1000 test images: 20.0 %
+
+****************************
+
+****************************
+Learning Rate: 0.0001
+Filter : None and sigma: 1
+Noise level : 20
+Overall accuracy of the network on the 1000 test images: 89.4 %
+
+****************************
+
+****************************
+Learning Rate: 0.0001
+Filter : None and sigma: 1
+Noise level : 50
+Overall accuracy of the network on the 1000 test images: 20.0 %
+
+****************************
+
+****************************
+Learning Rate: 0.0001
+Filter : None and sigma: 1
+Noise level : 80
+Overall accuracy of the network on the 1000 test images: 20.0 %
+
+****************************
+
+****************************
+Learning Rate: 0.0001
+Filter : mean and sigma: 1
+Noise level : 20
+Overall accuracy of the network on the 1000 test images: 20.0 %
+
+****************************
+
+****************************
+Learning Rate: 0.0001
+Filter : mean and sigma: 1
+Noise level : 50
+Overall accuracy of the network on the 1000 test images: 20.0 %
+
+****************************
+
+****************************
+Learning Rate: 0.0001
+Filter : mean and sigma: 1
+Noise level : 80
+Overall accuracy of the network on the 1000 test images: 20.0 %
+
+****************************
+
+****************************
+Learning Rate: 0.0001
+Filter : gaussian and sigma: 0.5
+Noise level : 20
+Overall accuracy of the network on the 1000 test images: 20.0 %
+
+****************************
+
+****************************
+Learning Rate: 0.0001
+Filter : gaussian and sigma: 0.5
+Noise level : 50
+Overall accuracy of the network on the 1000 test images: 20.0 %
+
+****************************
+
+****************************
+Learning Rate: 0.0001
+Filter : gaussian and sigma: 0.5
+Noise level : 80
+Overall accuracy of the network on the 1000 test images: 20.0 %
+
+****************************
+
+****************************
+Learning Rate: 0.0001
+Filter : gaussian and sigma: 1
+Noise level : 20
+Overall accuracy of the network on the 1000 test images: 20.0 %
+
+****************************
+
+****************************
+Learning Rate: 0.0001
+Filter : gaussian and sigma: 1
+Noise level : 50
+Overall accuracy of the network on the 1000 test images: 20.0 %
+
+****************************
+
+****************************
+Learning Rate: 0.0001
+Filter : gaussian and sigma: 1
+Noise level : 80
+Overall accuracy of the network on the 1000 test images: 20.0 %
+
+****************************
+
+****************************
+Learning Rate: 0.0001
+Filter : gaussian and sigma: 5
+Noise level : 20
+Overall accuracy of the network on the 1000 test images: 20.0 %
+
+****************************
+
+****************************
+Learning Rate: 0.0001
+Filter : gaussian and sigma: 5
+Noise level : 50
+Overall accuracy of the network on the 1000 test images: 20.0 %
+
+****************************
+
+****************************
+Learning Rate: 0.0001
+Filter : gaussian and sigma: 5
+Noise level : 80
+Overall accuracy of the network on the 1000 test images: 20.0 %
+
+****************************
+
+****************************
+Learning Rate: 0.0001
+Filter : gaussian and sigma: 10
+Noise level : 20
+Overall accuracy of the network on the 1000 test images: 20.0 %
+
+****************************
+
+****************************
+Learning Rate: 0.0001
+Filter : gaussian and sigma: 10
+Noise level : 50
+Overall accuracy of the network on the 1000 test images: 20.0 %
+
+****************************
+
+****************************
+Learning Rate: 0.0001
+Filter : gaussian and sigma: 10
+Noise level : 80
+Overall accuracy of the network on the 1000 test images: 20.0 %
+
+****************************
+
+****************************
+Learning Rate: 0.0001
+Filter : gaussian and sigma: 50
+Noise level : 20
+Overall accuracy of the network on the 1000 test images: 90.1 %
+
+****************************
+
+****************************
+Learning Rate: 0.0001
+Filter : gaussian and sigma: 50
+Noise level : 50
+Overall accuracy of the network on the 1000 test images: 20.0 %
+
+****************************
+
+****************************
+Learning Rate: 0.0001
+Filter : gaussian and sigma: 50
+Noise level : 80
+Overall accuracy of the network on the 1000 test images: 81.2 %
+
+****************************
