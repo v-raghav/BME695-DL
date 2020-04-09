@@ -1,0 +1,44 @@
++Task 2:
+Dataset0 Classification Accuracy: 95 %
+Dataset0 Confusion Matrix
+
+                      rectangle       triangle           disk           oval           star
+
+   rectangle:            95.50           0.00           0.00           4.50           0.00
+    triangle:             0.50          99.00           0.50           0.00           0.00
+        disk:             0.00           0.00         100.00           0.00           0.00
+        oval:            16.50           0.00           1.00          82.50           0.00
+        star:             0.00           0.00           0.00           0.00         100.00
+
+Dataset20 Classification Accuracy: 94 %
+Dataset20 Confusion Matrix
+
+                      rectangle       triangle           disk           oval           star
+
+   rectangle:            82.50           0.00           0.00          15.50           2.00
+    triangle:             0.50          99.50           0.00           0.00           0.00
+        disk:             0.00           0.50          99.50           0.00           0.00
+        oval:             5.00           0.00           0.50          93.50           1.00
+        star:             0.50           0.00           0.00           0.00          99.50
+
+Dataset50 Classification Accuracy: 87 %
+Dataset50 Confusion Matrix
+
+                      rectangle       triangle           disk           oval           star
+
+   rectangle:            59.50           0.50           4.00          31.00           5.00
+    triangle:             1.50          95.00           2.00           0.50           1.00
+        disk:             0.50           0.00          99.50           0.00           0.00
+        oval:            11.00           0.00           2.00          87.00           0.00
+        star:             1.50           0.50           1.00           0.50          96.50
+
+Dataset80 Classification Accuracy: 80 %
+Dataset80 Confusion Matrix
+
+                      rectangle       triangle           disk           oval           star
+
+   rectangle:            47.50           1.50           7.00          39.00           5.00
+    triangle:             1.00          98.00           0.50           0.00           0.50
+        disk:             2.50           1.50          94.50           1.00           0.50
+        oval:            17.50           0.00           3.50          78.00           1.00
+        star:             3.50           0.00           6.00           4.50          86.00

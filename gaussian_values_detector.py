@@ -46,7 +46,6 @@ import re
 import math
 import random
 import torch.optim as optim
-from collections import defaultdict
 
 seed = 0
 random.seed(seed)
@@ -57,8 +56,27 @@ torch.backends.cudnn.deterministic = True
 torch.backends.cudnn.benchmarks = False
 os.environ['PYTHONHASHSEED'] = str(seed)
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-
 dtype = torch.float
+
+
+def gaussian_filter(shape, mu_x, mu_y, sigma_x, sigma_y):
+    m = n = shape // 2
+    h = torch.zeros(3, 1, shape, shape)
+    for index in range(3):
+        for x in [i for i in range(-m, m + 1, 1)]:
+            for y in [j for j in range(-n, n + 1, 1)]:
+                h[index][0][x + 1][y + 1] = torch.exp(
+                    -(((x - mu_x) ** 2) / (2. * sigma_x * sigma_x) + ((y - mu_y) ** 2) / (2. * sigma_y * sigma_y)))
+    sumh = h.sum()
+    if sumh != 0:
+        h /= sumh
+    h = h.float()
+    return h
+
+
+def apply_filter(img, filter):
+    out = F.conv2d(img, filter, padding=1, groups=3)
+    return out
 
 
 class DLStudio(object):
@@ -164,85 +182,10 @@ class DetectAndLocalize(nn.Module):
         self.dataserver_train = dataserver_train
         self.dataserver_test = dataserver_test
 
-    def apply_filter(img, filter):
-        img = img.unsqueeze(0)
-        out = F.conv2d(img, filter, padding=1, groups=3)
-        return out[0]
-
-    def gaussian_filter(shape, mu_x, mu_y, sigma_x, sigma_y):
-        m = n = shape // 2
-        h = torch.zeros(3, 1, shape, shape)
-        for index in range(3):
-            for x in [i for i in range(-m, m + 1, 1)]:
-                for y in [j for j in range(-n, n + 1, 1)]:
-                    h[index][0][x + 1][y + 1] = torch.exp(
-                        -(((x - mu_x) ** 2) / (2. * sigma_x * sigma_x) + ((y - mu_y) ** 2) / (2. * sigma_y * sigma_y)))
-        sumh = h.sum()
-        if sumh != 0:
-            h /= sumh
-        h = h.float()
-        return h
-
-    def smoothing_kernels():
-        param_0 = {'mu_x': torch.tensor([-0.1702]), 'mu_y': torch.tensor([0.]), 'sigma_x': torch.tensor([0.797]), 'sigma_y': torch.tensor([0.9079])}
-        param_20 = {'mu_x': torch.tensor([0.]), 'mu_y': torch.tensor([0.014]), 'sigma_x': torch.tensor([0.9748]), 'sigma_y': torch.tensor([0.9797])}
-        param_50 = {'mu_x': torch.tensor([-0.0805]), 'mu_y': torch.tensor([-0.270]), 'sigma_x': torch.tensor([1.303]), 'sigma_y': torch.tensor([1.396])}
-        param_80 = {'mu_x': torch.tensor([0.019]), 'mu_y': torch.tensor([0.011]), 'sigma_x': torch.tensor([2.586]), 'sigma_y': torch.tensor([2.6617])}
-
-        kernel_0 = DetectAndLocalize.gaussian_filter(3, param_0['mu_x'], param_0['mu_y'], param_0['sigma_x'],
-                                                     param_0['sigma_y'])
-        kernel_20 = DetectAndLocalize.gaussian_filter(3, param_20['mu_x'], param_20['mu_y'], param_20['sigma_x'],
-                                                      param_20['sigma_y'])
-        kernel_50 = DetectAndLocalize.gaussian_filter(3, param_50['mu_x'], param_50['mu_y'], param_50['sigma_x'],
-                                                      param_50['sigma_y'])
-        kernel_80 = DetectAndLocalize.gaussian_filter(3, param_80['mu_x'], param_80['mu_y'], param_80['sigma_x'],
-                                                      param_80['sigma_y'])
-
-        return kernel_0, kernel_20, kernel_50, kernel_80
-
     class PurdueShapes5Dataset(torch.utils.data.Dataset):
         def __init__(self, dl_studio, train_or_test, dataset_file, transform=None):
             super(DetectAndLocalize.PurdueShapes5Dataset, self).__init__()
-            if train_or_test == 'train' and dataset_file == "PurdueShapes5-40000-train.gz":
-                if os.path.exists("torch-saved-PurdueShapes5-40000-dataset.pt") and \
-                        os.path.exists("torch-saved-PurdueShapes5-label-map.pt"):
-                    print("\nLoading training data from the torch-saved archive")
-                    self.dataset = torch.load("torch-saved-PurdueShapes5-40000-dataset.pt")
-                    self.label_map = torch.load("torch-saved-PurdueShapes5-label-map.pt")
-                    # reverse the key-value pairs in the label dictionary:
-                    self.class_labels = dict(map(reversed, self.label_map.items()))
-                    self.transform = transform
-                else:
-                    print("""\n\n\nLooks like this is the first time you will be loading in\n"""
-                          """the dataset for this script. First time loading could take\n"""
-                          """a minute or so.  Any subsequent attempts will only take\n"""
-                          """a few seconds.\n\n\n""")
-                    root_dir = dl_studio.dataroot
-                    dataset_paths = ["PurdueShapes5-10000-train.gz",
-                                     "PurdueShapes5-10000-train-noise-20.gz",
-                                     "PurdueShapes5-10000-train-noise-50.gz",
-                                     "PurdueShapes5-10000-train-noise-80.gz"
-                                     ]
-                    self.dataset = {}
-                    for label, datapath in enumerate(dataset_paths):
-                        f = gzip.open(root_dir + datapath, 'rb')
-                        dataset = f.read()
-                        if sys.version_info[0] == 3:
-                            temp_dataset, self.label_map = pickle.loads(dataset, encoding='latin1')
-                        else:
-                            temp_dataset, self.label_map = pickle.loads(dataset)
-
-                        for index in range(10000):
-                            dict_index = label * 10000 + index
-                            self.dataset[dict_index] = temp_dataset[index]
-                            self.dataset[dict_index][4] = label
-
-                    torch.save(self.dataset, "torch-saved-PurdueShapes5-40000-dataset.pt")
-                    torch.save(self.label_map, "torch-saved-PurdueShapes5-label-map.pt")
-                    # reverse the key-value pairs in the label dictionary:
-                    self.class_labels = {0: "No Noise", 1: "20%", 2: "50%", 3: "80%"}
-                    self.transform = transform
-            elif train_or_test == 'train' and dataset_file == "PurdueShapes5-10000-train.gz":
+            if train_or_test == 'train' and dataset_file == "PurdueShapes5-10000-train.gz":
                 if os.path.exists("torch-saved-PurdueShapes5-10000-dataset.pt") and \
                         os.path.exists("torch-saved-PurdueShapes5-label-map.pt"):
                     print("\nLoading training data from the torch-saved archive")
@@ -346,31 +289,6 @@ class DetectAndLocalize(nn.Module):
                     # reverse the key-value pairs in the label dictionary:
                     self.class_labels = dict(map(reversed, self.label_map.items()))
                     self.transform = transform
-            elif train_or_test == 'test' and dataset_file == "PurdueShapes5-4000-test.gz":
-
-                root_dir = dl_studio.dataroot
-                dataset_paths = ["PurdueShapes5-1000-test.gz",
-                                 "PurdueShapes5-1000-test-noise-20.gz",
-                                 "PurdueShapes5-1000-test-noise-50.gz",
-                                 "PurdueShapes5-1000-test-noise-80.gz"
-                                 ]
-                self.dataset = {}
-                for label, datapath in enumerate(dataset_paths):
-                    f = gzip.open(root_dir + datapath, 'rb')
-                    dataset = f.read()
-                    if sys.version_info[0] == 3:
-                        temp_dataset, self.label_map = pickle.loads(dataset, encoding='latin1')
-                    else:
-                        temp_dataset, self.label_map = pickle.loads(dataset)
-
-                    for index in range(1000):
-                        dict_index = label * 1000 + index
-                        self.dataset[dict_index] = temp_dataset[index]
-                        self.dataset[dict_index][4] = label
-
-                # reverse the key-value pairs in the label dictionary:
-                self.class_labels = {0: "No Noise", 1: "20%", 2: "50%", 3: "80%"}
-                self.transform = transform
             else:
                 root_dir = dl_studio.dataroot
                 f = gzip.open(root_dir + dataset_file, 'rb')
@@ -455,9 +373,18 @@ class DetectAndLocalize(nn.Module):
         def __init__(self, skip_connections=True, depth=32):
             super(DetectAndLocalize.LOADnet2, self).__init__()
             self.pool_count = 3
+            self.mu_x = torch.nn.Parameter(torch.tensor([0.]))
+            self.mu_y = torch.nn.Parameter(torch.tensor([0.]))
+            self.sigma_x = torch.nn.Parameter(torch.tensor([0.5]))
+            self.sigma_y = torch.nn.Parameter(torch.tensor([0.5]))
+            self.mu_x.requires_grad = True
+            self.mu_y.requires_grad = True
+            self.sigma_x.requires_grad = True
+            self.sigma_y.requires_grad = True
+
             self.depth = depth // 2
             self.conv = nn.Conv2d(3, 64, 3, padding=1)
-            self.pool = nn.AvgPool2d(2, 2)
+            self.pool = nn.MaxPool2d(2, 2)
             self.skip64 = DetectAndLocalize.SkipBlock(64, 64,
                                                       skip_connections=skip_connections)
             self.skip64ds = DetectAndLocalize.SkipBlock(64, 64,
@@ -485,7 +412,12 @@ class DetectAndLocalize(nn.Module):
                 nn.Linear(512, 4)
             )
 
-        def forward(self, x):
+        def forward(self, x3):
+            kernel = gaussian_filter(3, self.mu_x, self.mu_y, self.sigma_x, self.sigma_y)
+            kernel = kernel.to(device)
+
+            x = apply_filter(x3, kernel)
+
             x = self.pool(torch.nn.functional.relu(self.conv(x)))
             ## The labeling section:
             x1 = x.clone()
@@ -511,7 +443,7 @@ class DetectAndLocalize(nn.Module):
             x2 = self.fc_seqn(x2)
             return x1, x2
 
-    def run_code_for_training_with_CrossEntropy_and_MSE_Losses(self, net, noise_detector):
+    def run_code_for_training_with_CrossEntropy_and_MSE_Losses(self, net):
         filename_for_out1 = "performance_numbers_" + str(self.dl_studio.epochs) + "label.txt"
         filename_for_out2 = "performance_numbers_" + str(self.dl_studio.epochs) + "regres.txt"
         FILE1 = open(filename_for_out1, 'w')
@@ -522,16 +454,9 @@ class DetectAndLocalize(nn.Module):
         criterion2 = nn.MSELoss()
         optimizer = optim.SGD(net.parameters(),
                               lr=self.dl_studio.learning_rate, momentum=self.dl_studio.momentum)
-
-        kernel_0, kernel_20, kernel_50, kernel_80 = DetectAndLocalize.smoothing_kernels()
-        kernel_0 = kernel_0.to(self.dl_studio.device)
-        kernel_20 = kernel_20.to(self.dl_studio.device)
-        kernel_50 = kernel_50.to(self.dl_studio.device)
-        kernel_80 = kernel_80.to(self.dl_studio.device)
         for epoch in range(self.dl_studio.epochs):
             running_loss_labeling = 0.0
             running_loss_regression = 0.0
-            counter = defaultdict(int)
             for i, data in enumerate(self.train_dataloader):
                 gt_too_small = False
                 inputs, bbox_gt, labels = data['image'], data['bbox'], data['label']
@@ -544,23 +469,6 @@ class DetectAndLocalize(nn.Module):
                 labels = labels.to(self.dl_studio.device)
                 bbox_gt = bbox_gt.to(self.dl_studio.device)
                 optimizer.zero_grad()
-
-                # First pass the input through the noise detector model
-                temp_outputs = noise_detector.net(inputs)
-                temp_outputs = temp_outputs.max(1)[1]
-                temp_outputs = (temp_outputs.tolist())
-                for j, noise_label in enumerate(temp_outputs):
-                    if noise_label == 0:  # If image is detected to have noise of 20%,or 50% or 80%.
-                        inputs[j] = DetectAndLocalize.apply_filter(inputs[j], kernel_0)  # Apply smoothing
-                    elif noise_label == 1:
-                        inputs[j] = DetectAndLocalize.apply_filter(inputs[j], kernel_20)  # Apply smoothing
-                    elif noise_label == 2:
-                        inputs[j] = DetectAndLocalize.apply_filter(inputs[j], kernel_50)  # Apply smoothing
-                    elif noise_label == 3:
-                        inputs[j] = DetectAndLocalize.apply_filter(inputs[j], kernel_80)  # Apply smoothing
-                    else:
-                        pass
-                    counter[noise_label] += 1
                 outputs = net(inputs)
                 outputs_label = outputs[0]
                 bbox_pred = outputs[1]
@@ -616,12 +524,12 @@ class DetectAndLocalize(nn.Module):
                     FILE2.flush()
                     running_loss_labeling = 0.0
                     running_loss_regression = 0.0
-            #                    if self.dl_studio.debug_train and i % 500 == 499:
-            #                    if self.dl_studio.debug_train and ((epoch==0 and (i==0 or i==9 or i==99)) or i%500==499):
-            #                        self.dl_studio.display_tensor_as_image(
-            #                            torchvision.utils.make_grid(inputs_copy, normalize=True),
-            #                            "see terminal for TRAINING results at iter=%d" % (i + 1))
-            print((counter))
+        #                    if self.dl_studio.debug_train and i % 500 == 499:
+        #                    if self.dl_studio.debug_train and ((epoch==0 and (i==0 or i==9 or i==99)) or i%500==499):
+        #                        self.dl_studio.display_tensor_as_image(
+        #                            torchvision.utils.make_grid(inputs_copy, normalize=True),
+        #                            "see terminal for TRAINING results at iter=%d" % (i + 1))
+
         print("\nFinished Training\n")
         self.save_model(net)
 
@@ -631,7 +539,7 @@ class DetectAndLocalize(nn.Module):
             '''
         torch.save(model.state_dict(), self.dl_studio.path_saved_model)
 
-    def run_code_for_testing_detection_and_localization(self, net, noise_detector):
+    def run_code_for_testing_detection_and_localization(self, net,file):
         net.load_state_dict(torch.load(self.dl_studio.path_saved_model))
         correct = 0
         total = 0
@@ -639,13 +547,7 @@ class DetectAndLocalize(nn.Module):
                                        len(self.dataserver_train.class_labels))
         class_correct = [0] * len(self.dataserver_train.class_labels)
         class_total = [0] * len(self.dataserver_train.class_labels)
-        kernel_0, kernel_20, kernel_50, kernel_80 = DetectAndLocalize.smoothing_kernels()
-        kernel_0 = kernel_0.to(self.dl_studio.device)
-        kernel_20 = kernel_20.to(self.dl_studio.device)
-        kernel_50 = kernel_50.to(self.dl_studio.device)
-        kernel_80 = kernel_80.to(self.dl_studio.device)
         with torch.no_grad():
-            counter = defaultdict(int)
             for i, data in enumerate(self.test_dataloader):
                 images, bounding_box, labels = data['image'], data['bbox'], data['label']
                 images = images.to(self.dl_studio.device)
@@ -655,24 +557,6 @@ class DetectAndLocalize(nn.Module):
                                                                           self.dataserver_train.class_labels[
                                                                               labels[j]] for j in
                                                                           range(self.dl_studio.batch_size)))
-
-                # First pass the input through the noise detector model
-                temp_outputs = noise_detector.net(images)
-                temp_outputs = temp_outputs.max(1)[1]
-                temp_outputs = (temp_outputs.tolist())
-                for j, noise_label in enumerate(temp_outputs):
-                    if noise_label == 0:  # If image is detected to have noise of 20%,or 50% or 80%.
-                        images[j] = DetectAndLocalize.apply_filter(images[j], kernel_0)  # Apply smoothing
-                    elif noise_label == 1:
-                        images[j] = DetectAndLocalize.apply_filter(images[j], kernel_20)  # Apply smoothing
-                    elif noise_label == 2:
-                        images[j] = DetectAndLocalize.apply_filter(images[j], kernel_50)  # Apply smoothing
-                    elif noise_label == 3:
-                        images[j] = DetectAndLocalize.apply_filter(images[j], kernel_80)  # Apply smoothing
-                    else:
-                        pass
-                    counter[noise_label] += 1
-
                 outputs = net(images)
                 outputs_label = outputs[0]
                 outputs_regression = outputs[1]
@@ -718,14 +602,14 @@ class DetectAndLocalize(nn.Module):
                     label = labels[j]
                     class_correct[label] += comp[j]
                     class_total[label] += 1
-            print((counter))
-
         print("\n")
         for j in range(len(self.dataserver_train.class_labels)):
             print('Prediction accuracy for %5s : %2d %%' % (
                 self.dataserver_train.class_labels[j], 100 * class_correct[j] / class_total[j]))
         print("\n\n\nOverall accuracy of the network on the 1000 test images: %d %%" %
               (100 * correct / float(total)))
+        file.write("\n\n\nOverall accuracy of the network on the 1000 test images: %s %%" %
+              (str(100 * correct / float(total))))
         print("\n\nDisplaying the confusion matrix:\n")
         out_str = "                "
         for j in range(len(self.dataserver_train.class_labels)):
@@ -739,129 +623,6 @@ class DetectAndLocalize(nn.Module):
             for j in range(len(self.dataserver_train.class_labels)):
                 out_str += "%15s" % out_percents[j]
             print(out_str)
-
-
-class NoiseDetector():
-    def __init__(self, LEARNING_RATE, NUM_OF_EPOCHS):
-        self.dls = DLStudio(
-            dataroot="./data/",
-            image_size=[32, 32],
-            momentum=0.9,
-            learning_rate=LEARNING_RATE,
-            epochs=NUM_OF_EPOCHS,
-            batch_size=4,
-            debug_train=1,
-            debug_test=1,
-            use_gpu=True,
-        )
-        self.LEARNING_RATE = LEARNING_RATE
-        self.NUM_OF_EPOCHS = NUM_OF_EPOCHS
-        self.detector = DetectAndLocalize(dl_studio=self.dls)
-        self.dataserver_train = DetectAndLocalize.PurdueShapes5Dataset(
-            train_or_test='train',
-            dl_studio=self.dls,
-            #                                   dataset_file = "PurdueShapes5-20-train.gz",
-            dataset_file="PurdueShapes5-40000-train.gz"
-        )
-        self.dataserver_test = DetectAndLocalize.PurdueShapes5Dataset(
-            train_or_test='test',
-            dl_studio=self.dls,
-            #                                   dataset_file = "PurdueShapes5-20-test.gz"
-            dataset_file="PurdueShapes5-4000-test.gz"
-        )
-        self.detector.dataserver_train = self.dataserver_train
-        self.detector.dataserver_test = self.dataserver_test
-
-        self.detector.load_PurdueShapes5_dataset(self.dataserver_train, self.dataserver_test)
-        self.net = self.NoiseModel()
-        self.net.cuda()
-        PATH = './NoiseDetector.pth'
-        if os.path.exists(PATH):
-            self.net.load_state_dict(torch.load(PATH))
-        else:
-            self.run_code_for_training()
-            torch.save(self.net.state_dict(), PATH)
-
-    class NoiseModel(nn.Module):
-        def __init__(self):
-            super(NoiseDetector.NoiseModel, self).__init__()
-            self.conv1 = nn.Conv2d(3, 5, 5)
-            self.pool = nn.AvgPool2d(2, 2)
-            self.conv2 = nn.Conv2d(5, 15, 5)
-            self.fc1 = nn.Linear(15 * 5 * 5, 120)
-            self.fc2 = nn.Linear(120, 84)
-            self.fc3 = nn.Linear(84, 4)
-
-        def forward(self, x):
-            x = self.pool(F.relu(self.conv1(x)))
-            x = self.pool(F.relu(self.conv2(x)))
-            x = x.view(-1, 15 * 5 * 5)
-            x = F.relu(self.fc1(x))
-            x = F.relu(self.fc2(x))
-            x = self.fc3(x)
-            return x
-
-    def run_code_for_training(self):
-        # Define the loss function
-        self.net = self.net.to(device)
-        criterion = nn.CrossEntropyLoss()
-        optimizer = torch.optim.SGD(self.net.parameters(), lr=self.LEARNING_RATE, momentum=0.9)
-
-        for epoch in range(self.NUM_OF_EPOCHS):
-            running_loss = 0.0
-            for i, data in enumerate(self.detector.train_dataloader):
-                # get the input features and corresponding labels
-                inputs, labels = data['image'], data['label']
-                # Shape of input is (m,a1,a2,a3,...)
-                # where m is the batch size
-
-                inputs = inputs.to(device)
-                labels = labels.to(device)
-
-                # Initialize the parameter gradients to 0
-                optimizer.zero_grad()
-
-                # forward pass and backward propagation
-                outputs = self.net(inputs)
-                loss = criterion(outputs, labels)
-                loss.backward()
-                optimizer.step()
-
-                # Calculate the loss values
-                running_loss += loss.item()
-
-                if i % 50 == 0:
-                    print("\n[epoch:%d, batch:%5d] loss: %.3f" %
-                          (epoch + 1, i + 1, running_loss / float(50)))
-                    running_loss = 0.0
-
-            # print("Epoch %d: %.3f" % (epoch + 1, running_loss / (i * 4)))
-            # file.write("Epoch %s: %s\n" % (str(epoch + 1), "{:.3f}".format(running_loss / (i * 4))))
-        # print("Training done")
-        return self.net
-
-    def inference(self):
-        with torch.no_grad():
-            correct = 0
-            print(len(self.dataserver_test))
-            for i, data in enumerate(self.detector.test_dataloader):
-                # get the input features and corresponding labels
-                inputs, labels = data['image'], data['label']
-                # Shape of input is (m,a1,a2,a3,...)
-                # where m is the batch size
-
-                inputs = inputs.to(device)
-                labels = labels.to(device)
-
-                # forward pass
-                outputs = self.net(inputs)
-
-                positives = outputs.max(1)[1] == labels
-                correct += positives.sum().item()
-
-            final_accuracy = (correct / len(self.dataserver_test)) * 100
-
-            return final_accuracy
 
 
 ##  watch -d -n 0.5 nvidia-smi
@@ -880,38 +641,45 @@ dls = DLStudio(
     use_gpu=True,
 )
 
-detector = DetectAndLocalize(dl_studio=dls)
-dataserver_train = DetectAndLocalize.PurdueShapes5Dataset(
-    train_or_test='train',
-    dl_studio=dls,
-    #                                   dataset_file = "PurdueShapes5-20-train.gz",
-    # dataset_file="PurdueShapes5-10000-train.gz"
-    dataset_file="PurdueShapes5-10000-train-noise-20.gz"
-)
-dataserver_test = DetectAndLocalize.PurdueShapes5Dataset(
-    train_or_test='test',
-    dl_studio=dls,
-    #                                   dataset_file = "PurdueShapes5-20-test.gz"
-    # dataset_file="PurdueShapes5-1000-test.gz"
-    dataset_file="PurdueShapes5-1000-test-noise-20.gz"
-)
-detector.dataserver_train = dataserver_train
-detector.dataserver_test = dataserver_test
+train_paths = ["PurdueShapes5-10000-train.gz",
+               "PurdueShapes5-10000-train-noise-20.gz",
+               "PurdueShapes5-10000-train-noise-50.gz",
+               "PurdueShapes5-10000-train-noise-80.gz"
+               ]
+test_paths = ["PurdueShapes5-1000-test.gz",
+              "PurdueShapes5-1000-test-noise-20.gz",
+              "PurdueShapes5-1000-test-noise-50.gz",
+              "PurdueShapes5-1000-test-noise-80.gz"
+              ]
+file = open('gaussian_values.txt', 'w+')
+for train_path, test_path in zip(train_paths, test_paths):
+    detector = DetectAndLocalize(dl_studio=dls)
+    dataserver_train = DetectAndLocalize.PurdueShapes5Dataset(
+        train_or_test='train',
+        dl_studio=dls,
+        # dataset_file = "PurdueShapes5-20-train.gz"
+        dataset_file=train_path
+    )
+    dataserver_test = DetectAndLocalize.PurdueShapes5Dataset(
+        train_or_test='test',
+        dl_studio=dls,
+        # dataset_file = "PurdueShapes5-20-test.gz"
+        dataset_file=test_path
+    )
+    detector.dataserver_train = dataserver_train
+    detector.dataserver_test = dataserver_test
 
-detector.load_PurdueShapes5_dataset(dataserver_train, dataserver_test)
+    detector.load_PurdueShapes5_dataset(dataserver_train, dataserver_test)
 
-model = detector.LOADnet2(skip_connections=True, depth=32)
-model.cuda()
-# Declare instance of NoiseDetector class
+    model = detector.LOADnet2(skip_connections=True, depth=32)
+    model.cuda()
+    detector.run_code_for_training_with_CrossEntropy_and_MSE_Losses(model)
+    # detector.run_code_for_training_with_CrossEntropy_and_BCE_Losses(model)
 
-noise_detector = NoiseDetector(LEARNING_RATE=1e-3, NUM_OF_EPOCHS=2)
-print(noise_detector.inference())
+    import pymsgbox
 
-detector.run_code_for_training_with_CrossEntropy_and_MSE_Losses(model, noise_detector)
-
-# detector.run_code_for_training_with_CrossEntropy_and_BCE_Losses(model)
-
-import pymsgbox
-
-detector.run_code_for_testing_detection_and_localization(model, noise_detector)
-
+    detector.run_code_for_testing_detection_and_localization(model,file)
+    print(model.mu_x, model.mu_y, model.sigma_x, model.sigma_y)
+    file.write("mu_x=%s, mu_y=%s, sigma_x=%s,sigma_y=%s\n\n" % (
+    str(model.mu_x.item()), str(model.mu_y.item()), str(model.sigma_x.item()), str(model.sigma_y.item())))
+file.close()
