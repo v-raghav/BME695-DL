@@ -1,2 +1,2 @@
 # BME695-DL
-Hello!
+Repository containing HW5
